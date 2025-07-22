@@ -30,7 +30,12 @@ jobs:
           sudo ln -s `pwd`/flyway-*/flyway /usr/local/bin/flyway
 
       - name: Run Initial Migrations
-        run: flyway -url=jdbc:mysql://localhost:3306/mysql?allowPublicKeyRetrieval=true&useSSL=false -user=root -password=pass -locations=filesystem:migrations migrate
+        run: flyway -url=jdbc:mysql://localhost:3306/mysql?allowPublicKeyRetrieval=true&useSSL=false \
+            -user=root \
+            -password=pass \
+            -locations=filesystem:migrations \
+            migrate
+
 
 
       - name: Run Incremental Migrations
