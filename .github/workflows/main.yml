@@ -26,7 +26,7 @@ jobs:
 
       - name: Set up Flyway
         run: |
-          curl -L https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/9.16.0/flyway-commandline-9.16.0-linux-x64.tar.gz | tar xz
+          curl -L https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/8.5.13/flyway-commandline-8.5.13-linux-x64.tar.gz | tar xz
           sudo ln -s `pwd`/flyway-*/flyway /usr/local/bin/flyway
 
       - name: Run Initial Migrations
