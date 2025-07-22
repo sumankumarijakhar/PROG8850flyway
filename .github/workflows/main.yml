@@ -18,37 +18,41 @@ jobs:
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=10
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Flyway
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+      - name: Download and Install Flyway
         run: |
           curl -L https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/8.5.13/flyway-commandline-8.5.13-linux-x64.tar.gz | tar xz
-          sudo ln -s `pwd`/flyway-*/flyway /usr/local/bin/flyway
+          sudo cp flyway-8.5.13/flyway /usr/local/bin/
+          flyway -v  # Confirm Flyway installed
 
       - name: Run Initial Migrations
         run: |
-            flyway -url=jdbc:mysql://localhost:3306/mysql?allowPublicKeyRetrieval=true&useSSL=false \
-            -user=root \
-            -password=pass \
-            -locations=filesystem:migrations \
-            migrate
+          flyway -url=jdbc:mysql://localhost:3306/mysql?allowPublicKeyRetrieval=true&useSSL=false \
+          -user=root \
+          -password=pass \
+          -locations=filesystem:migrations \
+          migrate
 
       - name: Run Incremental Migrations
-        run: 
-            flyway -url=jdbc:mysql://localhost:3306/mysql?allowPublicKeyRetrieval=true&useSSL=false \
-            -user=root \
-            -password=pass \
-            -locations=filesystem:migrations_incremental \
-            migrate
+        run: |
+          flyway -url=jdbc:mysql://localhost:3306/mysql?allowPublicKeyRetrieval=true&useSSL=false \
+          -user=root \
+          -password=pass \
+          -locations=filesystem:migrations_incremental \
+          migrate
 
-      - name: Run Unit Tests
+      - name: Install Dependencies & Run Unit Tests
         run: |
           pip install -r requirements.txt
           pytest tests
 
       - name: Deployment Complete
-        run: echo "Deployment Done ✅"
+        run: echo "✅ Deployment Done"
